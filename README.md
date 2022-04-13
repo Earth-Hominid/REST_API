@@ -14,3 +14,5 @@ This REST API was built from scratch, it can work as an initial template for a N
 - Nodemon
 - DOTENV
 - CORS
+- curl
+- uuid

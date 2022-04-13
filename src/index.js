@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import cors from 'cors';
 import express from 'express';
+import { v4 as uuidv4 } from 'uuid';
+
 let users = {
   1: {
     id: '1',
@@ -27,6 +29,13 @@ const port = process.env.PORT;
 const app = express();
 
 app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use((req, res, next) => {
+  req.me = users[1];
+  next();
+});
 
 app.get('/users', (req, res) => {
   return res.send(Object.values(users));
@@ -54,6 +63,19 @@ app.put('/users/:userId', (req, res) => {
 
 app.delete('/users/:userId', (req, res) => {
   return res.send(`DELETE HTTP method on user/${req.params.userId} resource`);
+});
+
+app.post('/messages', (req, res) => {
+  const id = uuidv4();
+  const message = {
+    id,
+    text: req.body.text,
+    userId: req.me.id,
+  };
+
+  messages[id] = message;
+
+  return res.send(message);
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
